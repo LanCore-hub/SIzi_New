@@ -113,7 +113,7 @@ public class ButtonCheckThreads1 : MonoBehaviour
         switch (workType)
         {
             case WorkType.WorkType1:
-                TextObject.SetText("Подготовка шихтовых материалов. Пиление материалов");
+                TextObject.SetText("Подготовка шихтовых материалов");
                 break;
             case WorkType.WorkType2:
                 TextObject.SetText("Работа с малым объёмом расплава");
@@ -147,8 +147,11 @@ public class ButtonCheckThreads1 : MonoBehaviour
         var itemsTagsOnTable = table.GetComponent<CheckObjectsOnTable>().objectTagsOnTable;
         var itemsNamesOnTable = table.GetComponent<CheckObjectsOnTable>().objectNamesOnTable;
         var allObjects = table.GetComponent<CheckObjectsOnTable>().allObjectsOnTable;
+        int countObject = 0;
 
-        Vector3 position = new Vector3(8.28100014f, 5.28000021f, 3.98000002f);
+        //Vector3 position = new Vector3(8.28100014f, 5.28000021f, 3.98000002f); // На стенке со столом
+        Vector3 startPosition = new Vector3(3.07800007f, 5.28000021f, 4.75f);
+        Vector3 position = startPosition;
 
         // Собираем все необходимые теги для быстрой проверки
         HashSet<string> requiredTags = new HashSet<string>();
@@ -167,7 +170,7 @@ public class ButtonCheckThreads1 : MonoBehaviour
             string itemName = item.name;
 
             // Создаем экземпляр картинки для каждого предмета
-            GameObject pictureInstance = Instantiate(picture, position, Quaternion.identity);
+            GameObject pictureInstance = Instantiate(picture, position, Quaternion.Euler(0,-90,0));
             Renderer pictureRenderer = pictureInstance.transform.Find("picture").GetComponent<Renderer>();
             Renderer borderRenderer = pictureInstance.transform.Find("boarder").GetComponent<Renderer>();
 
@@ -245,7 +248,10 @@ public class ButtonCheckThreads1 : MonoBehaviour
                 Debug.Log($"Предмет {itemName} с тегом {itemTag} НЕ подходит для задания");
             }
 
-            position = position - new Vector3(0, 0, 1.1f);
+            //position = position - new Vector3(0, 0, 1.1f);
+            countObject++;
+            if (countObject % 5 == 0) position = startPosition + new Vector3(0, -1.1f, 0);
+            else position = position + new Vector3(1.1f, 0, 0);
         }
 
         bool isWorkCorrect = CheckWorkCorrect(currentRequirements, itemsTagsOnTable);
